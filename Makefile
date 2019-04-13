@@ -13,4 +13,3 @@ basic_test: compile
 
 clean:
 	@rm ${EXE} lex.*
-

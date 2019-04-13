@@ -12,8 +12,8 @@
 letter [a-zA-Z]
 digit [0-9]
 id {letter}+({letter}|{digit})*
-integer {digit}+
-float {digit}+[.]{digit}+
+integer ({digit}+|([-]{digit}+))
+float {integer}+[.]{digit}+
 string ["](.)*["]
 c_plus_comment "//"(.)*
 c_comment "/*"((\*+[^/])|([^*]))*"*/"
@@ -92,7 +92,7 @@ c_comment "/*"((\*+[^/])|([^*]))*"*/"
 			}
 
 " "			{;}
-\n			{++num_lines;}
+[\n]			{++num_lines;}
 
 %%
 
