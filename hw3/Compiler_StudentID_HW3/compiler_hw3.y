@@ -86,7 +86,7 @@ char string_buf[128];
 int semantic_error_flag=0;
 int syntax_error_flag=0;
 int error_flag=0;
-int cmp_label=0;
+int cmp_num=0;
 int while_count=0;
 int ret_type=5;
 int func_undecl_flag = 0;
@@ -95,6 +95,7 @@ int if_end_num = 0;
 int while_num = 0;
 int while_end_num = 0;
 int while_flag = 0;
+int param_buffer[64];
 symbol_table *head;
 symbol_table *tail;
 symbol_table *record;
@@ -170,7 +171,9 @@ char* search_id();
 %type <var_info> p1_arithmetic_stat
 %type <var_info> p3_arithmetic_stat
 %type <var_info> p2_arithmetic_stat
-%type <var_info> logic_stat
+%type <i_val> logic_stat
+%type <i_val> logic_stats
+%type <i_val> logic_op
 %type <var_info> initializer
 // %type <f_val> stat
 
@@ -675,7 +678,7 @@ if_part1
     : IF LB logic_stats RB {
         ++scope_num;
         char tempbuf[64];
-        sprintf(tempbuf, "\tifeq L_FALSE_ACTION_%d\n", scope_num);
+        sprintf(tempbuf, "\tifeq LABLE_F_ACTION_%d\n", scope_num);
         gencode_function(tempbuf);
         }
 ;
@@ -685,7 +688,7 @@ if_part2
         char tempbuf[64];
         sprintf(tempbuf, "\tgoto IF_EXIT_%d\n", if_end_num);
         gencode_function(tempbuf);
-        sprintf(tempbuf,"L_FALSE_ACTION_%d",scope_num);
+        sprintf(tempbuf,"LABLE_F_ACTION_%d",scope_num);
         gencode_function(tempbuf);
         sprintf(tempbuf,"%s",":\n");
         gencode_function(tempbuf);
@@ -704,7 +707,7 @@ else_if_part1
     : ELSE IF LB logic_stats RB {
         ++scope_num;
         char tempbuf[64];
-        sprintf(tempbuf, "\tifeq L_FALSE_ACTION_%d\n", scope_num);
+        sprintf(tempbuf, "\tifeq LABLE_F_ACTION_%d\n", scope_num);
         gencode_function(tempbuf);
     }
 
@@ -715,7 +718,7 @@ else_if_part2
         char tempbuf[64];
         sprintf(tempbuf, "\tgoto IF_EXIT_%d\n", if_end_num);
         gencode_function(tempbuf);
-        sprintf(tempbuf,"L_FALSE_ACTION_%d",scope_num);
+        sprintf(tempbuf,"LABLE_F_ACTION_%d",scope_num);
         gencode_function(tempbuf);
         sprintf(tempbuf,"%s",":\n");
         gencode_function(tempbuf);
@@ -806,18 +809,25 @@ func_call
             print_error("Undeclared function ",$1);
             func_undecl_flag = 1;
         }
+
         gencode_function_call($1,func_call_param_num);
+        for(int i =0;i<func_call_param_num;i++){
+            if(param_buffer[i] != getParam($1,i)){
+                yyerror("Parameter type mismatch!");
+            }
+        }
         func_call_param_num =0;
 
     }
 ;
 func_call_param
-    : func_call_param COMMA p3_arithmetic_stat{
+    : p3_arithmetic_stat COMMA func_call_param{
+        param_buffer[func_call_param_num] = $1[1];
         func_call_param_num++;
     }
     | p3_arithmetic_stat{
+        param_buffer[func_call_param_num] = $1[1];
         func_call_param_num++;
-        
     }
     | logic_stats{
         func_call_param_num++;
@@ -988,16 +998,88 @@ param
 
 logic_stats
     : logic_stats logic_op logic_stats{
+        switch($2){
+            case 1:
+                if($1==1 && $3==1){
+                    $$ = 1;
+                }
+                else{
+                    $$ = 0;
+                }
+                gencode_function("\tiand\n");
+                break;
+            case 2:
+                if($1==1 || $3==1){
+                    $$ = 1;
+                }
+                else{
+                    $$ = 0;
+                }
+                gencode_function("\tior\n");
+                break;
+        }
     }
-    | logic_stat
+    | logic_stat {
+        $$ = $1;
+    }
 ;
 logic_stat
     : value_stat compare_op value_stat{
         gencode_compare($1,$3,$2);
+        switch($2){
+            case 1:
+                if($1[0]>$3[0]){
+                    $$ = 1;
+                }
+                else{
+                    $$= 0;
+                }
+                break;
+            case 2:
+                if($1[0]<$3[0]){
+                    $$ = 1;
+                }
+                else{
+                    $$= 0;
+                }
+                break;
+            case 3:
+                if($1[0]>=$3[0]){
+                    $$ = 1;
+                }
+                else{
+                    $$= 0;
+                }
+                break;
+            case 4:
+                if($1[0]<=$3[0]){
+                    $$ = 1;
+                }
+                else{
+                    $$= 0;
+                }
+                break;
+            case 5:
+                if($1[0]=$3[0]){
+                    $$ = 1;
+                }
+                else{
+                    $$= 0;
+                }
+                break;
+            case 6:
+                if($1[0]!=$3[0]){
+                    $$ = 1;
+                }
+                else{
+                    $$= 0;
+                }
+                break;
+              
+        }
     }
     | value_stat {
-        $$[0] = $1[0];
-        $$[1] = $1[1];
+        $$ = (int)$1[0];
     }
 ;
 
@@ -1010,8 +1092,8 @@ compare_op
     | NE {$$=6;}
 ;
 logic_op
-    : AND
-    | OR
+    : AND {$$=1;}
+    | OR {$$=2;}
 ;
 
 %%
@@ -1550,10 +1632,11 @@ void gencode_MOD(float left[7],float right[7]){
 
 void gencode_load(float data[7],char* id){
     char tempbuf[64];
+    int global_flag = check_global(id);
     switch((int)data[1]){
         case 1:
             //global
-            if(data[5]){
+            if(global_flag){
                 sprintf(tempbuf, "\tgetstatic compiler_hw3/%s %s\n", id, "I");
                 gencode_function(tempbuf);
             }
@@ -1564,7 +1647,7 @@ void gencode_load(float data[7],char* id){
             }
             break;
         case 2:
-            if(data[5]){
+            if(global_flag){
                 sprintf(tempbuf, "\tgetstatic compiler_hw3/%s %s\n", id, "F");
                 gencode_function(tempbuf);
             }
@@ -1575,7 +1658,7 @@ void gencode_load(float data[7],char* id){
             }
             break;
         case 3:
-            if(data[5]){
+            if(global_flag){
                 sprintf(tempbuf, "\tgetstatic compiler_hw3/%s %s\n", id, "Z");
                 gencode_function(tempbuf);
             }
@@ -1586,7 +1669,7 @@ void gencode_load(float data[7],char* id){
             }
             break;
         case 4:
-            if(data[5]){
+            if(global_flag){
                 sprintf(tempbuf, "\tgetstatic compiler_hw3/%s %s\n",id, "Ljava/lang/String;");
                 gencode_function(tempbuf);
             }
@@ -1777,7 +1860,7 @@ void gencode_DEC(float var[7]){
 }
 void gencode_INC(float var[7]){
     char tempbuf[64];
-    sprintf(tempbuf,"%d\n",(int)var[4]);
+    sprintf(tempbuf,"%d\n",(int)var[2]);
     switch((int)var[1]){
         case 1:
             gencode_function("\tldc 1\n");
@@ -1827,7 +1910,7 @@ void gencode_assign(char*name,int assign_type,float right[7]){
     float info[7];
     info[0] = get_symbol_value(name);
     info[1] = get_symbol_type(name);
-    info[5] = check_global(name);
+    info[3] = check_global(name);
     switch(assign_type){
         case 1:
 		if(right[1] == 1 && type ==1){
@@ -1897,9 +1980,7 @@ void gencode_assign(char*name,int assign_type,float right[7]){
 void gencode_compare(float left[7],float right[7],int op){
     char tempbuf[64];
 	if(left[1] == 1 && right[1] == 1){
-		// change right to float
 		gencode_function("\ti2f\n");
-		// save right to register
 		gencode_function("\tswap\n");
 		gencode_function("\ti2f\n");
 		gencode_function("\tswap\n");
@@ -1920,52 +2001,52 @@ void gencode_compare(float left[7],float right[7],int op){
 
 	gencode_function("\tfcmpl\n");
 
-	char label_name[10];
+	char op_name[10];
 	char op_code[10];
 
 	switch(op){
         	
 	case 1:
 		sprintf(op_code, "ifgt");
-		sprintf(label_name, "MT");
+		sprintf(op_name, "MT");
 		break;
 
 	case 2:
 		sprintf(op_code, "iflt");
-		sprintf(label_name, "LT");
+		sprintf(op_name, "LT");
 		break;
 
 	case 3:
 		sprintf(op_code, "ifge");
-		sprintf(label_name, "MTE");
+		sprintf(op_name, "MTE");
 		break;
 	case 4:
 		sprintf(op_code, "ifle");
-		sprintf(label_name, "LTE");
+		sprintf(op_name, "LTE");
 		break;
 	case 5:
 		sprintf(op_code, "ifeq");
-		sprintf(label_name, "EQ");
+		sprintf(op_name, "EQ");
 		break;
 
 	case 6:
 		sprintf(op_code, "ifne");
-		sprintf(label_name, "NE");
+		sprintf(op_name, "NE");
 		break;
 	}
 
-	sprintf(tempbuf, "\t%s L_%s_TRUE_%d\n", op_code, label_name, cmp_label);
+	sprintf(tempbuf, "\t%s LABLE_%s_T_%d\n", op_code, op_name, cmp_num);
 	gencode_function(tempbuf);
 	gencode_function("\ticonst_0\n");
-	sprintf(tempbuf, "\tgoto L_%s_FALSE_%d\n", label_name, cmp_label);
+	sprintf(tempbuf, "\tgoto LABLE_%s_F_%d\n", op_name, cmp_num);
 	gencode_function(tempbuf);
-	sprintf(tempbuf, "L_%s_TRUE_%d:\n", label_name, cmp_label);
+	sprintf(tempbuf, "LABLE_%s_T_%d:\n", op_name, cmp_num);
 	gencode_function(tempbuf);
 	gencode_function("\ticonst_1\n");
-	sprintf(tempbuf,"L_%s_FALSE_%d:\n", label_name, cmp_label);
+	sprintf(tempbuf,"LABLE_%s_F_%d:\n", op_name, cmp_num);
 	gencode_function(tempbuf);
 
-	cmp_label++;
+	cmp_num++;
 }
 
 int getParam(char* name,int i){
