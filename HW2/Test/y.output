@@ -1,0 +1,2903 @@
+Terminals unused in grammar
+
+   NOT
+   LSB
+   RSB
+   FOR
+   ENDFILE
+
+
+State 34 conflicts: 1 shift/reduce
+State 48 conflicts: 2 shift/reduce
+State 49 conflicts: 2 shift/reduce
+State 51 conflicts: 1 shift/reduce
+State 52 conflicts: 1 shift/reduce
+State 53 conflicts: 1 shift/reduce
+State 118 conflicts: 2 reduce/reduce
+State 142 conflicts: 1 shift/reduce
+
+
+Grammar
+
+    0 $accept: program $end
+
+    1 program: program stats
+    2        | stats
+
+    3 stats: stat
+    4      | funtcion_declation
+
+    5 stat_list: stat_list stat
+    6          | stat
+
+    7 stat: declaration_stat
+    8     | compound_stat
+    9     | expression_stat
+   10     | print_func SEMICOLON
+
+   11 declaration_stat: type declaration SEMICOLON
+
+   12 declaration: ID ASGN initializer
+   13            | ID
+   14            | ID ASGN initializer COMMA declaration
+   15            | ID COMMA declaration
+
+   16 initializer: arithmetic_stat
+
+   17 arithmetic_stat: lv2_arithmetic_stat ADD arithmetic_stat
+   18                | lv2_arithmetic_stat SUB arithmetic_stat
+   19                | lv2_arithmetic_stat
+   20                | LB arithmetic_stat RB
+
+   21 lv2_arithmetic_stat: lv3_arithmetic_stat MUL lv2_arithmetic_stat
+   22                    | lv3_arithmetic_stat DIV lv2_arithmetic_stat
+   23                    | lv3_arithmetic_stat MOD lv2_arithmetic_stat
+   24                    | lv3_arithmetic_stat
+   25                    | LB lv2_arithmetic_stat RB
+
+   26 lv3_arithmetic_stat: INC lv3_arithmetic_stat
+   27                    | DEC lv3_arithmetic_stat
+   28                    | lv3_arithmetic_stat INC
+   29                    | lv3_arithmetic_stat DEC
+   30                    | value_stat
+   31                    | LB lv3_arithmetic_stat RB
+
+   32 value_stat: ADD value_stat
+   33           | SUB value_stat
+   34           | STRING_TEXT
+   35           | value
+   36           | LB value_stat RB
+
+   37 value: I_CONST
+   38      | F_CONST
+   39      | TRUE
+   40      | FALSE
+   41      | ID
+
+   42 funtcion_declation: function_declation_part1 function_declation_part2
+
+   43 function_declation_part1: type ID LB
+
+   44 function_declation_part2: function_parameter RB SEMICOLON
+   45                         | RB SEMICOLON
+   46                         | function_parameter RB LCB stat_list RCB
+   47                         | RB LCB stat_list RCB
+
+   48 function_parameter: type ID
+   49                   | function_parameter COMMA type ID
+
+   50 compound_stat: if_else_stat
+   51              | while_stat
+
+   52 if_else_stat: if_stat
+   53             | if_stat else_stat
+
+   54 if_stat: if_stat_part1 if_stat_part2
+
+   55 if_stat_part1: IF LB logical_stats RB
+
+   56 if_stat_part2: SEMICOLON
+   57              | stat
+   58              | LCB stat_list RCB
+
+   59 else_stat: else_stat_part1 else_stat_part2
+
+   60 else_stat_part1: ELSE
+
+   61 else_stat_part2: stat SEMICOLON
+   62                | LCB stat_list RCB
+   63                | SEMICOLON
+
+   64 logical_stats: logical_stats logical_operation logical_stat
+   65              | logical_stat
+
+   66 logical_stat: value_stat MT value_stat
+   67             | value_stat LT value_stat
+   68             | value_stat MTE value_stat
+   69             | value_stat LTE value_stat
+   70             | value_stat EQ value_stat
+   71             | value_stat NE value_stat
+   72             | value_stat
+
+   73 logical_operation: AND
+   74                  | OR
+
+   75 while_stat: while_stat_part1 while_stat_part2
+
+   76 while_stat_part1: WHILE LB logical_stats RB
+
+   77 while_stat_part2: SEMICOLON
+   78                 | stat SEMICOLON
+   79                 | LCB stat_list RCB
+
+   80 expression_stat: assignment_stat SEMICOLON
+   81                | function_call SEMICOLON
+   82                | RETURN arithmetic_stat SEMICOLON
+   83                | RETURN SEMICOLON
+
+   84 assignment_stat: ID ASGN arithmetic_stat
+   85                | ID ADDASGN arithmetic_stat
+   86                | ID SUBASGN arithmetic_stat
+   87                | ID MULASGN arithmetic_stat
+   88                | ID DIVASGN arithmetic_stat
+   89                | ID MODASGN arithmetic_stat
+   90                | arithmetic_stat
+   91                | assignment_stat COMMA assignment_stat
+
+   92 function_call: ID LB function_send_parameter RB
+
+   93 function_send_parameter: function_send_parameter COMMA arithmetic_stat
+   94                        | arithmetic_stat
+   95                        | logical_stats
+
+   96 print_func: PRINT LB print_item RB
+
+   97 print_item: ID
+   98           | STRING_TEXT
+
+   99 type: INT
+  100     | FLOAT
+  101     | BOOL
+  102     | STRING
+  103     | VOID
+
+
+Terminals, with rules where they appear
+
+$end (0) 0
+error (256)
+ADD (258) 17 32
+SUB (259) 18 33
+MUL (260) 21
+DIV (261) 22
+MOD (262) 23
+INC (263) 26 28
+DEC (264) 27 29
+MT (265) 66
+LT (266) 67
+MTE (267) 68
+LTE (268) 69
+EQ (269) 70
+NE (270) 71
+ASGN (271) 12 14 84
+ADDASGN (272) 85
+SUBASGN (273) 86
+MULASGN (274) 87
+DIVASGN (275) 88
+MODASGN (276) 89
+AND (277) 73
+OR (278) 74
+NOT (279)
+LB (280) 20 25 31 36 43 55 76 92 96
+RB (281) 20 25 31 36 44 45 46 47 55 76 92 96
+LCB (282) 46 47 58 62 79
+RCB (283) 46 47 58 62 79
+LSB (284)
+RSB (285)
+COMMA (286) 14 15 49 91 93
+PRINT (287) 96
+IF (288) 55
+ELSE (289) 60
+FOR (290)
+WHILE (291) 76
+VOID (292) 103
+INT (293) 99
+FLOAT (294) 100
+STRING (295) 102
+BOOL (296) 101
+TRUE (297) 39
+FALSE (298) 40
+RETURN (299) 82 83
+SEMICOLON (300) 10 11 44 45 56 61 63 77 78 80 81 82 83
+ENDFILE (301)
+I_CONST (302) 37
+F_CONST (303) 38
+STRING_TEXT (304) 34 98
+ID (305) 12 13 14 15 41 43 48 49 84 85 86 87 88 89 92 97
+
+
+Nonterminals, with rules where they appear
+
+$accept (51)
+    on left: 0
+program (52)
+    on left: 1 2, on right: 0 1
+stats (53)
+    on left: 3 4, on right: 1 2
+stat_list (54)
+    on left: 5 6, on right: 5 46 47 58 62 79
+stat (55)
+    on left: 7 8 9 10, on right: 3 5 6 57 61 78
+declaration_stat (56)
+    on left: 11, on right: 7
+declaration (57)
+    on left: 12 13 14 15, on right: 11 14 15
+initializer (58)
+    on left: 16, on right: 12 14
+arithmetic_stat (59)
+    on left: 17 18 19 20, on right: 16 17 18 20 82 84 85 86 87 88 89
+    90 93 94
+lv2_arithmetic_stat (60)
+    on left: 21 22 23 24 25, on right: 17 18 19 21 22 23 25
+lv3_arithmetic_stat (61)
+    on left: 26 27 28 29 30 31, on right: 21 22 23 24 26 27 28 29 31
+value_stat (62)
+    on left: 32 33 34 35 36, on right: 30 32 33 36 66 67 68 69 70 71
+    72
+value (63)
+    on left: 37 38 39 40 41, on right: 35
+funtcion_declation (64)
+    on left: 42, on right: 4
+function_declation_part1 (65)
+    on left: 43, on right: 42
+function_declation_part2 (66)
+    on left: 44 45 46 47, on right: 42
+function_parameter (67)
+    on left: 48 49, on right: 44 46 49
+compound_stat (68)
+    on left: 50 51, on right: 8
+if_else_stat (69)
+    on left: 52 53, on right: 50
+if_stat (70)
+    on left: 54, on right: 52 53
+if_stat_part1 (71)
+    on left: 55, on right: 54
+if_stat_part2 (72)
+    on left: 56 57 58, on right: 54
+else_stat (73)
+    on left: 59, on right: 53
+else_stat_part1 (74)
+    on left: 60, on right: 59
+else_stat_part2 (75)
+    on left: 61 62 63, on right: 59
+logical_stats (76)
+    on left: 64 65, on right: 55 64 76 95
+logical_stat (77)
+    on left: 66 67 68 69 70 71 72, on right: 64 65
+logical_operation (78)
+    on left: 73 74, on right: 64
+while_stat (79)
+    on left: 75, on right: 51
+while_stat_part1 (80)
+    on left: 76, on right: 75
+while_stat_part2 (81)
+    on left: 77 78 79, on right: 75
+expression_stat (82)
+    on left: 80 81 82 83, on right: 9
+assignment_stat (83)
+    on left: 84 85 86 87 88 89 90 91, on right: 80 91
+function_call (84)
+    on left: 92, on right: 81
+function_send_parameter (85)
+    on left: 93 94 95, on right: 92 93
+print_func (86)
+    on left: 96, on right: 10
+print_item (87)
+    on left: 97 98, on right: 96
+type (88)
+    on left: 99 100 101 102 103, on right: 11 43 48 49
+
+
+State 0
+
+    0 $accept: . program $end
+
+    ADD          shift, and go to state 1
+    SUB          shift, and go to state 2
+    INC          shift, and go to state 3
+    DEC          shift, and go to state 4
+    LB           shift, and go to state 5
+    PRINT        shift, and go to state 6
+    IF           shift, and go to state 7
+    WHILE        shift, and go to state 8
+    VOID         shift, and go to state 9
+    INT          shift, and go to state 10
+    FLOAT        shift, and go to state 11
+    STRING       shift, and go to state 12
+    BOOL         shift, and go to state 13
+    TRUE         shift, and go to state 14
+    FALSE        shift, and go to state 15
+    RETURN       shift, and go to state 16
+    I_CONST      shift, and go to state 17
+    F_CONST      shift, and go to state 18
+    STRING_TEXT  shift, and go to state 19
+    ID           shift, and go to state 20
+
+    program                   go to state 21
+    stats                     go to state 22
+    stat                      go to state 23
+    declaration_stat          go to state 24
+    arithmetic_stat           go to state 25
+    lv2_arithmetic_stat       go to state 26
+    lv3_arithmetic_stat       go to state 27
+    value_stat                go to state 28
+    value                     go to state 29
+    funtcion_declation        go to state 30
+    function_declation_part1  go to state 31
+    compound_stat             go to state 32
+    if_else_stat              go to state 33
+    if_stat                   go to state 34
+    if_stat_part1             go to state 35
+    while_stat                go to state 36
+    while_stat_part1          go to state 37
+    expression_stat           go to state 38
+    assignment_stat           go to state 39
+    function_call             go to state 40
+    print_func                go to state 41
+    type                      go to state 42
+
+
+State 1
+
+   32 value_stat: ADD . value_stat
+
+    ADD          shift, and go to state 1
+    SUB          shift, and go to state 2
+    LB           shift, and go to state 43
+    TRUE         shift, and go to state 14
+    FALSE        shift, and go to state 15
+    I_CONST      shift, and go to state 17
+    F_CONST      shift, and go to state 18
+    STRING_TEXT  shift, and go to state 19
+    ID           shift, and go to state 44
+
+    value_stat  go to state 45
+    value       go to state 29
+
+
+State 2
+
+   33 value_stat: SUB . value_stat
+
+    ADD          shift, and go to state 1
+    SUB          shift, and go to state 2
+    LB           shift, and go to state 43
+    TRUE         shift, and go to state 14
+    FALSE        shift, and go to state 15
+    I_CONST      shift, and go to state 17
+    F_CONST      shift, and go to state 18
+    STRING_TEXT  shift, and go to state 19
+    ID           shift, and go to state 44
+
+    value_stat  go to state 46
+    value       go to state 29
+
+
+State 3
+
+   26 lv3_arithmetic_stat: INC . lv3_arithmetic_stat
+
+    ADD          shift, and go to state 1
+    SUB          shift, and go to state 2
+    INC          shift, and go to state 3
+    DEC          shift, and go to state 4
+    LB           shift, and go to state 47
+    TRUE         shift, and go to state 14
+    FALSE        shift, and go to state 15
+    I_CONST      shift, and go to state 17
+    F_CONST      shift, and go to state 18
+    STRING_TEXT  shift, and go to state 19
+    ID           shift, and go to state 44
+
+    lv3_arithmetic_stat  go to state 48
+    value_stat           go to state 28
+    value                go to state 29
+
+
+State 4
+
+   27 lv3_arithmetic_stat: DEC . lv3_arithmetic_stat
+
+    ADD          shift, and go to state 1
+    SUB          shift, and go to state 2
+    INC          shift, and go to state 3
+    DEC          shift, and go to state 4
+    LB           shift, and go to state 47
+    TRUE         shift, and go to state 14
+    FALSE        shift, and go to state 15
+    I_CONST      shift, and go to state 17
+    F_CONST      shift, and go to state 18
+    STRING_TEXT  shift, and go to state 19
+    ID           shift, and go to state 44
+
+    lv3_arithmetic_stat  go to state 49
+    value_stat           go to state 28
+    value                go to state 29
+
+
+State 5
+
+   20 arithmetic_stat: LB . arithmetic_stat RB
+   25 lv2_arithmetic_stat: LB . lv2_arithmetic_stat RB
+   31 lv3_arithmetic_stat: LB . lv3_arithmetic_stat RB
+   36 value_stat: LB . value_stat RB
+
+    ADD          shift, and go to state 1
+    SUB          shift, and go to state 2
+    INC          shift, and go to state 3
+    DEC          shift, and go to state 4
+    LB           shift, and go to state 5
+    TRUE         shift, and go to state 14
+    FALSE        shift, and go to state 15
+    I_CONST      shift, and go to state 17
+    F_CONST      shift, and go to state 18
+    STRING_TEXT  shift, and go to state 19
+    ID           shift, and go to state 44
+
+    arithmetic_stat      go to state 50
+    lv2_arithmetic_stat  go to state 51
+    lv3_arithmetic_stat  go to state 52
+    value_stat           go to state 53
+    value                go to state 29
+
+
+State 6
+
+   96 print_func: PRINT . LB print_item RB
+
+    LB  shift, and go to state 54
+
+
+State 7
+
+   55 if_stat_part1: IF . LB logical_stats RB
+
+    LB  shift, and go to state 55
+
+
+State 8
+
+   76 while_stat_part1: WHILE . LB logical_stats RB
+
+    LB  shift, and go to state 56
+
+
+State 9
+
+  103 type: VOID .
+
+    $default  reduce using rule 103 (type)
+
+
+State 10
+
+   99 type: INT .
+
+    $default  reduce using rule 99 (type)
+
+
+State 11
+
+  100 type: FLOAT .
+
+    $default  reduce using rule 100 (type)
+
+
+State 12
+
+  102 type: STRING .
+
+    $default  reduce using rule 102 (type)
+
+
+State 13
+
+  101 type: BOOL .
+
+    $default  reduce using rule 101 (type)
+
+
+State 14
+
+   39 value: TRUE .
+
+    $default  reduce using rule 39 (value)
+
+
+State 15
+
+   40 value: FALSE .
+
+    $default  reduce using rule 40 (value)
+
+
+State 16
+
+   82 expression_stat: RETURN . arithmetic_stat SEMICOLON
+   83                | RETURN . SEMICOLON
+
+    ADD          shift, and go to state 1
+    SUB          shift, and go to state 2
+    INC          shift, and go to state 3
+    DEC          shift, and go to state 4
+    LB           shift, and go to state 5
+    TRUE         shift, and go to state 14
+    FALSE        shift, and go to state 15
+    SEMICOLON    shift, and go to state 57
+    I_CONST      shift, and go to state 17
+    F_CONST      shift, and go to state 18
+    STRING_TEXT  shift, and go to state 19
+    ID           shift, and go to state 44
+
+    arithmetic_stat      go to state 58
+    lv2_arithmetic_stat  go to state 26
+    lv3_arithmetic_stat  go to state 27
+    value_stat           go to state 28
+    value                go to state 29
+
+
+State 17
+
+   37 value: I_CONST .
+
+    $default  reduce using rule 37 (value)
+
+
+State 18
+
+   38 value: F_CONST .
+
+    $default  reduce using rule 38 (value)
+
+
+State 19
+
+   34 value_stat: STRING_TEXT .
+
+    $default  reduce using rule 34 (value_stat)
+
+
+State 20
+
+   41 value: ID .
+   84 assignment_stat: ID . ASGN arithmetic_stat
+   85                | ID . ADDASGN arithmetic_stat
+   86                | ID . SUBASGN arithmetic_stat
+   87                | ID . MULASGN arithmetic_stat
+   88                | ID . DIVASGN arithmetic_stat
+   89                | ID . MODASGN arithmetic_stat
+   92 function_call: ID . LB function_send_parameter RB
+
+    ASGN     shift, and go to state 59
+    ADDASGN  shift, and go to state 60
+    SUBASGN  shift, and go to state 61
+    MULASGN  shift, and go to state 62
+    DIVASGN  shift, and go to state 63
+    MODASGN  shift, and go to state 64
+    LB       shift, and go to state 65
+
+    $default  reduce using rule 41 (value)
+
+
+State 21
+
+    0 $accept: program . $end
+    1 program: program . stats
+
+    $end         shift, and go to state 66
+    ADD          shift, and go to state 1
+    SUB          shift, and go to state 2
+    INC          shift, and go to state 3
+    DEC          shift, and go to state 4
+    LB           shift, and go to state 5
+    PRINT        shift, and go to state 6
+    IF           shift, and go to state 7
+    WHILE        shift, and go to state 8
+    VOID         shift, and go to state 9
+    INT          shift, and go to state 10
+    FLOAT        shift, and go to state 11
+    STRING       shift, and go to state 12
+    BOOL         shift, and go to state 13
+    TRUE         shift, and go to state 14
+    FALSE        shift, and go to state 15
+    RETURN       shift, and go to state 16
+    I_CONST      shift, and go to state 17
+    F_CONST      shift, and go to state 18
+    STRING_TEXT  shift, and go to state 19
+    ID           shift, and go to state 20
+
+    stats                     go to state 67
+    stat                      go to state 23
+    declaration_stat          go to state 24
+    arithmetic_stat           go to state 25
+    lv2_arithmetic_stat       go to state 26
+    lv3_arithmetic_stat       go to state 27
+    value_stat                go to state 28
+    value                     go to state 29
+    funtcion_declation        go to state 30
+    function_declation_part1  go to state 31
+    compound_stat             go to state 32
+    if_else_stat              go to state 33
+    if_stat                   go to state 34
+    if_stat_part1             go to state 35
+    while_stat                go to state 36
+    while_stat_part1          go to state 37
+    expression_stat           go to state 38
+    assignment_stat           go to state 39
+    function_call             go to state 40
+    print_func                go to state 41
+    type                      go to state 42
+
+
+State 22
+
+    2 program: stats .
+
+    $default  reduce using rule 2 (program)
+
+
+State 23
+
+    3 stats: stat .
+
+    $default  reduce using rule 3 (stats)
+
+
+State 24
+
+    7 stat: declaration_stat .
+
+    $default  reduce using rule 7 (stat)
+
+
+State 25
+
+   90 assignment_stat: arithmetic_stat .
+
+    $default  reduce using rule 90 (assignment_stat)
+
+
+State 26
+
+   17 arithmetic_stat: lv2_arithmetic_stat . ADD arithmetic_stat
+   18                | lv2_arithmetic_stat . SUB arithmetic_stat
+   19                | lv2_arithmetic_stat .
+
+    ADD  shift, and go to state 68
+    SUB  shift, and go to state 69
+
+    $default  reduce using rule 19 (arithmetic_stat)
+
+
+State 27
+
+   21 lv2_arithmetic_stat: lv3_arithmetic_stat . MUL lv2_arithmetic_stat
+   22                    | lv3_arithmetic_stat . DIV lv2_arithmetic_stat
+   23                    | lv3_arithmetic_stat . MOD lv2_arithmetic_stat
+   24                    | lv3_arithmetic_stat .
+   28 lv3_arithmetic_stat: lv3_arithmetic_stat . INC
+   29                    | lv3_arithmetic_stat . DEC
+
+    MUL  shift, and go to state 70
+    DIV  shift, and go to state 71
+    MOD  shift, and go to state 72
+    INC  shift, and go to state 73
+    DEC  shift, and go to state 74
+
+    $default  reduce using rule 24 (lv2_arithmetic_stat)
+
+
+State 28
+
+   30 lv3_arithmetic_stat: value_stat .
+
+    $default  reduce using rule 30 (lv3_arithmetic_stat)
+
+
+State 29
+
+   35 value_stat: value .
+
+    $default  reduce using rule 35 (value_stat)
+
+
+State 30
+
+    4 stats: funtcion_declation .
+
+    $default  reduce using rule 4 (stats)
+
+
+State 31
+
+   42 funtcion_declation: function_declation_part1 . function_declation_part2
+
+    RB      shift, and go to state 75
+    VOID    shift, and go to state 9
+    INT     shift, and go to state 10
+    FLOAT   shift, and go to state 11
+    STRING  shift, and go to state 12
+    BOOL    shift, and go to state 13
+
+    function_declation_part2  go to state 76
+    function_parameter        go to state 77
+    type                      go to state 78
+
+
+State 32
+
+    8 stat: compound_stat .
+
+    $default  reduce using rule 8 (stat)
+
+
+State 33
+
+   50 compound_stat: if_else_stat .
+
+    $default  reduce using rule 50 (compound_stat)
+
+
+State 34
+
+   52 if_else_stat: if_stat .
+   53             | if_stat . else_stat
+
+    ELSE  shift, and go to state 79
+
+    ELSE      [reduce using rule 52 (if_else_stat)]
+    $default  reduce using rule 52 (if_else_stat)
+
+    else_stat        go to state 80
+    else_stat_part1  go to state 81
+
+
+State 35
+
+   54 if_stat: if_stat_part1 . if_stat_part2
+
+    ADD          shift, and go to state 1
+    SUB          shift, and go to state 2
+    INC          shift, and go to state 3
+    DEC          shift, and go to state 4
+    LB           shift, and go to state 5
+    LCB          shift, and go to state 82
+    PRINT        shift, and go to state 6
+    IF           shift, and go to state 7
+    WHILE        shift, and go to state 8
+    VOID         shift, and go to state 9
+    INT          shift, and go to state 10
+    FLOAT        shift, and go to state 11
+    STRING       shift, and go to state 12
+    BOOL         shift, and go to state 13
+    TRUE         shift, and go to state 14
+    FALSE        shift, and go to state 15
+    RETURN       shift, and go to state 16
+    SEMICOLON    shift, and go to state 83
+    I_CONST      shift, and go to state 17
+    F_CONST      shift, and go to state 18
+    STRING_TEXT  shift, and go to state 19
+    ID           shift, and go to state 20
+
+    stat                 go to state 84
+    declaration_stat     go to state 24
+    arithmetic_stat      go to state 25
+    lv2_arithmetic_stat  go to state 26
+    lv3_arithmetic_stat  go to state 27
+    value_stat           go to state 28
+    value                go to state 29
+    compound_stat        go to state 32
+    if_else_stat         go to state 33
+    if_stat              go to state 34
+    if_stat_part1        go to state 35
+    if_stat_part2        go to state 85
+    while_stat           go to state 36
+    while_stat_part1     go to state 37
+    expression_stat      go to state 38
+    assignment_stat      go to state 39
+    function_call        go to state 40
+    print_func           go to state 41
+    type                 go to state 86
+
+
+State 36
+
+   51 compound_stat: while_stat .
+
+    $default  reduce using rule 51 (compound_stat)
+
+
+State 37
+
+   75 while_stat: while_stat_part1 . while_stat_part2
+
+    ADD          shift, and go to state 1
+    SUB          shift, and go to state 2
+    INC          shift, and go to state 3
+    DEC          shift, and go to state 4
+    LB           shift, and go to state 5
+    LCB          shift, and go to state 87
+    PRINT        shift, and go to state 6
+    IF           shift, and go to state 7
+    WHILE        shift, and go to state 8
+    VOID         shift, and go to state 9
+    INT          shift, and go to state 10
+    FLOAT        shift, and go to state 11
+    STRING       shift, and go to state 12
+    BOOL         shift, and go to state 13
+    TRUE         shift, and go to state 14
+    FALSE        shift, and go to state 15
+    RETURN       shift, and go to state 16
+    SEMICOLON    shift, and go to state 88
+    I_CONST      shift, and go to state 17
+    F_CONST      shift, and go to state 18
+    STRING_TEXT  shift, and go to state 19
+    ID           shift, and go to state 20
+
+    stat                 go to state 89
+    declaration_stat     go to state 24
+    arithmetic_stat      go to state 25
+    lv2_arithmetic_stat  go to state 26
+    lv3_arithmetic_stat  go to state 27
+    value_stat           go to state 28
+    value                go to state 29
+    compound_stat        go to state 32
+    if_else_stat         go to state 33
+    if_stat              go to state 34
+    if_stat_part1        go to state 35
+    while_stat           go to state 36
+    while_stat_part1     go to state 37
+    while_stat_part2     go to state 90
+    expression_stat      go to state 38
+    assignment_stat      go to state 39
+    function_call        go to state 40
+    print_func           go to state 41
+    type                 go to state 86
+
+
+State 38
+
+    9 stat: expression_stat .
+
+    $default  reduce using rule 9 (stat)
+
+
+State 39
+
+   80 expression_stat: assignment_stat . SEMICOLON
+   91 assignment_stat: assignment_stat . COMMA assignment_stat
+
+    COMMA      shift, and go to state 91
+    SEMICOLON  shift, and go to state 92
+
+
+State 40
+
+   81 expression_stat: function_call . SEMICOLON
+
+    SEMICOLON  shift, and go to state 93
+
+
+State 41
+
+   10 stat: print_func . SEMICOLON
+
+    SEMICOLON  shift, and go to state 94
+
+
+State 42
+
+   11 declaration_stat: type . declaration SEMICOLON
+   43 function_declation_part1: type . ID LB
+
+    ID  shift, and go to state 95
+
+    declaration  go to state 96
+
+
+State 43
+
+   36 value_stat: LB . value_stat RB
+
+    ADD          shift, and go to state 1
+    SUB          shift, and go to state 2
+    LB           shift, and go to state 43
+    TRUE         shift, and go to state 14
+    FALSE        shift, and go to state 15
+    I_CONST      shift, and go to state 17
+    F_CONST      shift, and go to state 18
+    STRING_TEXT  shift, and go to state 19
+    ID           shift, and go to state 44
+
+    value_stat  go to state 97
+    value       go to state 29
+
+
+State 44
+
+   41 value: ID .
+
+    $default  reduce using rule 41 (value)
+
+
+State 45
+
+   32 value_stat: ADD value_stat .
+
+    $default  reduce using rule 32 (value_stat)
+
+
+State 46
+
+   33 value_stat: SUB value_stat .
+
+    $default  reduce using rule 33 (value_stat)
+
+
+State 47
+
+   31 lv3_arithmetic_stat: LB . lv3_arithmetic_stat RB
+   36 value_stat: LB . value_stat RB
+
+    ADD          shift, and go to state 1
+    SUB          shift, and go to state 2
+    INC          shift, and go to state 3
+    DEC          shift, and go to state 4
+    LB           shift, and go to state 47
+    TRUE         shift, and go to state 14
+    FALSE        shift, and go to state 15
+    I_CONST      shift, and go to state 17
+    F_CONST      shift, and go to state 18
+    STRING_TEXT  shift, and go to state 19
+    ID           shift, and go to state 44
+
+    lv3_arithmetic_stat  go to state 98
+    value_stat           go to state 53
+    value                go to state 29
+
+
+State 48
+
+   26 lv3_arithmetic_stat: INC lv3_arithmetic_stat .
+   28                    | lv3_arithmetic_stat . INC
+   29                    | lv3_arithmetic_stat . DEC
+
+    INC  shift, and go to state 73
+    DEC  shift, and go to state 74
+
+    INC       [reduce using rule 26 (lv3_arithmetic_stat)]
+    DEC       [reduce using rule 26 (lv3_arithmetic_stat)]
+    $default  reduce using rule 26 (lv3_arithmetic_stat)
+
+
+State 49
+
+   27 lv3_arithmetic_stat: DEC lv3_arithmetic_stat .
+   28                    | lv3_arithmetic_stat . INC
+   29                    | lv3_arithmetic_stat . DEC
+
+    INC  shift, and go to state 73
+    DEC  shift, and go to state 74
+
+    INC       [reduce using rule 27 (lv3_arithmetic_stat)]
+    DEC       [reduce using rule 27 (lv3_arithmetic_stat)]
+    $default  reduce using rule 27 (lv3_arithmetic_stat)
+
+
+State 50
+
+   20 arithmetic_stat: LB arithmetic_stat . RB
+
+    RB  shift, and go to state 99
+
+
+State 51
+
+   17 arithmetic_stat: lv2_arithmetic_stat . ADD arithmetic_stat
+   18                | lv2_arithmetic_stat . SUB arithmetic_stat
+   19                | lv2_arithmetic_stat .
+   25 lv2_arithmetic_stat: LB lv2_arithmetic_stat . RB
+
+    ADD  shift, and go to state 68
+    SUB  shift, and go to state 69
+    RB   shift, and go to state 100
+
+    RB  [reduce using rule 19 (arithmetic_stat)]
+
+
+State 52
+
+   21 lv2_arithmetic_stat: lv3_arithmetic_stat . MUL lv2_arithmetic_stat
+   22                    | lv3_arithmetic_stat . DIV lv2_arithmetic_stat
+   23                    | lv3_arithmetic_stat . MOD lv2_arithmetic_stat
+   24                    | lv3_arithmetic_stat .
+   28 lv3_arithmetic_stat: lv3_arithmetic_stat . INC
+   29                    | lv3_arithmetic_stat . DEC
+   31                    | LB lv3_arithmetic_stat . RB
+
+    MUL  shift, and go to state 70
+    DIV  shift, and go to state 71
+    MOD  shift, and go to state 72
+    INC  shift, and go to state 73
+    DEC  shift, and go to state 74
+    RB   shift, and go to state 101
+
+    RB        [reduce using rule 24 (lv2_arithmetic_stat)]
+    $default  reduce using rule 24 (lv2_arithmetic_stat)
+
+
+State 53
+
+   30 lv3_arithmetic_stat: value_stat .
+   36 value_stat: LB value_stat . RB
+
+    RB  shift, and go to state 102
+
+    RB        [reduce using rule 30 (lv3_arithmetic_stat)]
+    $default  reduce using rule 30 (lv3_arithmetic_stat)
+
+
+State 54
+
+   96 print_func: PRINT LB . print_item RB
+
+    STRING_TEXT  shift, and go to state 103
+    ID           shift, and go to state 104
+
+    print_item  go to state 105
+
+
+State 55
+
+   55 if_stat_part1: IF LB . logical_stats RB
+
+    ADD          shift, and go to state 1
+    SUB          shift, and go to state 2
+    LB           shift, and go to state 43
+    TRUE         shift, and go to state 14
+    FALSE        shift, and go to state 15
+    I_CONST      shift, and go to state 17
+    F_CONST      shift, and go to state 18
+    STRING_TEXT  shift, and go to state 19
+    ID           shift, and go to state 44
+
+    value_stat     go to state 106
+    value          go to state 29
+    logical_stats  go to state 107
+    logical_stat   go to state 108
+
+
+State 56
+
+   76 while_stat_part1: WHILE LB . logical_stats RB
+
+    ADD          shift, and go to state 1
+    SUB          shift, and go to state 2
+    LB           shift, and go to state 43
+    TRUE         shift, and go to state 14
+    FALSE        shift, and go to state 15
+    I_CONST      shift, and go to state 17
+    F_CONST      shift, and go to state 18
+    STRING_TEXT  shift, and go to state 19
+    ID           shift, and go to state 44
+
+    value_stat     go to state 106
+    value          go to state 29
+    logical_stats  go to state 109
+    logical_stat   go to state 108
+
+
+State 57
+
+   83 expression_stat: RETURN SEMICOLON .
+
+    $default  reduce using rule 83 (expression_stat)
+
+
+State 58
+
+   82 expression_stat: RETURN arithmetic_stat . SEMICOLON
+
+    SEMICOLON  shift, and go to state 110
+
+
+State 59
+
+   84 assignment_stat: ID ASGN . arithmetic_stat
+
+    ADD          shift, and go to state 1
+    SUB          shift, and go to state 2
+    INC          shift, and go to state 3
+    DEC          shift, and go to state 4
+    LB           shift, and go to state 5
+    TRUE         shift, and go to state 14
+    FALSE        shift, and go to state 15
+    I_CONST      shift, and go to state 17
+    F_CONST      shift, and go to state 18
+    STRING_TEXT  shift, and go to state 19
+    ID           shift, and go to state 44
+
+    arithmetic_stat      go to state 111
+    lv2_arithmetic_stat  go to state 26
+    lv3_arithmetic_stat  go to state 27
+    value_stat           go to state 28
+    value                go to state 29
+
+
+State 60
+
+   85 assignment_stat: ID ADDASGN . arithmetic_stat
+
+    ADD          shift, and go to state 1
+    SUB          shift, and go to state 2
+    INC          shift, and go to state 3
+    DEC          shift, and go to state 4
+    LB           shift, and go to state 5
+    TRUE         shift, and go to state 14
+    FALSE        shift, and go to state 15
+    I_CONST      shift, and go to state 17
+    F_CONST      shift, and go to state 18
+    STRING_TEXT  shift, and go to state 19
+    ID           shift, and go to state 44
+
+    arithmetic_stat      go to state 112
+    lv2_arithmetic_stat  go to state 26
+    lv3_arithmetic_stat  go to state 27
+    value_stat           go to state 28
+    value                go to state 29
+
+
+State 61
+
+   86 assignment_stat: ID SUBASGN . arithmetic_stat
+
+    ADD          shift, and go to state 1
+    SUB          shift, and go to state 2
+    INC          shift, and go to state 3
+    DEC          shift, and go to state 4
+    LB           shift, and go to state 5
+    TRUE         shift, and go to state 14
+    FALSE        shift, and go to state 15
+    I_CONST      shift, and go to state 17
+    F_CONST      shift, and go to state 18
+    STRING_TEXT  shift, and go to state 19
+    ID           shift, and go to state 44
+
+    arithmetic_stat      go to state 113
+    lv2_arithmetic_stat  go to state 26
+    lv3_arithmetic_stat  go to state 27
+    value_stat           go to state 28
+    value                go to state 29
+
+
+State 62
+
+   87 assignment_stat: ID MULASGN . arithmetic_stat
+
+    ADD          shift, and go to state 1
+    SUB          shift, and go to state 2
+    INC          shift, and go to state 3
+    DEC          shift, and go to state 4
+    LB           shift, and go to state 5
+    TRUE         shift, and go to state 14
+    FALSE        shift, and go to state 15
+    I_CONST      shift, and go to state 17
+    F_CONST      shift, and go to state 18
+    STRING_TEXT  shift, and go to state 19
+    ID           shift, and go to state 44
+
+    arithmetic_stat      go to state 114
+    lv2_arithmetic_stat  go to state 26
+    lv3_arithmetic_stat  go to state 27
+    value_stat           go to state 28
+    value                go to state 29
+
+
+State 63
+
+   88 assignment_stat: ID DIVASGN . arithmetic_stat
+
+    ADD          shift, and go to state 1
+    SUB          shift, and go to state 2
+    INC          shift, and go to state 3
+    DEC          shift, and go to state 4
+    LB           shift, and go to state 5
+    TRUE         shift, and go to state 14
+    FALSE        shift, and go to state 15
+    I_CONST      shift, and go to state 17
+    F_CONST      shift, and go to state 18
+    STRING_TEXT  shift, and go to state 19
+    ID           shift, and go to state 44
+
+    arithmetic_stat      go to state 115
+    lv2_arithmetic_stat  go to state 26
+    lv3_arithmetic_stat  go to state 27
+    value_stat           go to state 28
+    value                go to state 29
+
+
+State 64
+
+   89 assignment_stat: ID MODASGN . arithmetic_stat
+
+    ADD          shift, and go to state 1
+    SUB          shift, and go to state 2
+    INC          shift, and go to state 3
+    DEC          shift, and go to state 4
+    LB           shift, and go to state 5
+    TRUE         shift, and go to state 14
+    FALSE        shift, and go to state 15
+    I_CONST      shift, and go to state 17
+    F_CONST      shift, and go to state 18
+    STRING_TEXT  shift, and go to state 19
+    ID           shift, and go to state 44
+
+    arithmetic_stat      go to state 116
+    lv2_arithmetic_stat  go to state 26
+    lv3_arithmetic_stat  go to state 27
+    value_stat           go to state 28
+    value                go to state 29
+
+
+State 65
+
+   92 function_call: ID LB . function_send_parameter RB
+
+    ADD          shift, and go to state 1
+    SUB          shift, and go to state 2
+    INC          shift, and go to state 3
+    DEC          shift, and go to state 4
+    LB           shift, and go to state 5
+    TRUE         shift, and go to state 14
+    FALSE        shift, and go to state 15
+    I_CONST      shift, and go to state 17
+    F_CONST      shift, and go to state 18
+    STRING_TEXT  shift, and go to state 19
+    ID           shift, and go to state 44
+
+    arithmetic_stat          go to state 117
+    lv2_arithmetic_stat      go to state 26
+    lv3_arithmetic_stat      go to state 27
+    value_stat               go to state 118
+    value                    go to state 29
+    logical_stats            go to state 119
+    logical_stat             go to state 108
+    function_send_parameter  go to state 120
+
+
+State 66
+
+    0 $accept: program $end .
+
+    $default  accept
+
+
+State 67
+
+    1 program: program stats .
+
+    $default  reduce using rule 1 (program)
+
+
+State 68
+
+   17 arithmetic_stat: lv2_arithmetic_stat ADD . arithmetic_stat
+
+    ADD          shift, and go to state 1
+    SUB          shift, and go to state 2
+    INC          shift, and go to state 3
+    DEC          shift, and go to state 4
+    LB           shift, and go to state 5
+    TRUE         shift, and go to state 14
+    FALSE        shift, and go to state 15
+    I_CONST      shift, and go to state 17
+    F_CONST      shift, and go to state 18
+    STRING_TEXT  shift, and go to state 19
+    ID           shift, and go to state 44
+
+    arithmetic_stat      go to state 121
+    lv2_arithmetic_stat  go to state 26
+    lv3_arithmetic_stat  go to state 27
+    value_stat           go to state 28
+    value                go to state 29
+
+
+State 69
+
+   18 arithmetic_stat: lv2_arithmetic_stat SUB . arithmetic_stat
+
+    ADD          shift, and go to state 1
+    SUB          shift, and go to state 2
+    INC          shift, and go to state 3
+    DEC          shift, and go to state 4
+    LB           shift, and go to state 5
+    TRUE         shift, and go to state 14
+    FALSE        shift, and go to state 15
+    I_CONST      shift, and go to state 17
+    F_CONST      shift, and go to state 18
+    STRING_TEXT  shift, and go to state 19
+    ID           shift, and go to state 44
+
+    arithmetic_stat      go to state 122
+    lv2_arithmetic_stat  go to state 26
+    lv3_arithmetic_stat  go to state 27
+    value_stat           go to state 28
+    value                go to state 29
+
+
+State 70
+
+   21 lv2_arithmetic_stat: lv3_arithmetic_stat MUL . lv2_arithmetic_stat
+
+    ADD          shift, and go to state 1
+    SUB          shift, and go to state 2
+    INC          shift, and go to state 3
+    DEC          shift, and go to state 4
+    LB           shift, and go to state 123
+    TRUE         shift, and go to state 14
+    FALSE        shift, and go to state 15
+    I_CONST      shift, and go to state 17
+    F_CONST      shift, and go to state 18
+    STRING_TEXT  shift, and go to state 19
+    ID           shift, and go to state 44
+
+    lv2_arithmetic_stat  go to state 124
+    lv3_arithmetic_stat  go to state 27
+    value_stat           go to state 28
+    value                go to state 29
+
+
+State 71
+
+   22 lv2_arithmetic_stat: lv3_arithmetic_stat DIV . lv2_arithmetic_stat
+
+    ADD          shift, and go to state 1
+    SUB          shift, and go to state 2
+    INC          shift, and go to state 3
+    DEC          shift, and go to state 4
+    LB           shift, and go to state 123
+    TRUE         shift, and go to state 14
+    FALSE        shift, and go to state 15
+    I_CONST      shift, and go to state 17
+    F_CONST      shift, and go to state 18
+    STRING_TEXT  shift, and go to state 19
+    ID           shift, and go to state 44
+
+    lv2_arithmetic_stat  go to state 125
+    lv3_arithmetic_stat  go to state 27
+    value_stat           go to state 28
+    value                go to state 29
+
+
+State 72
+
+   23 lv2_arithmetic_stat: lv3_arithmetic_stat MOD . lv2_arithmetic_stat
+
+    ADD          shift, and go to state 1
+    SUB          shift, and go to state 2
+    INC          shift, and go to state 3
+    DEC          shift, and go to state 4
+    LB           shift, and go to state 123
+    TRUE         shift, and go to state 14
+    FALSE        shift, and go to state 15
+    I_CONST      shift, and go to state 17
+    F_CONST      shift, and go to state 18
+    STRING_TEXT  shift, and go to state 19
+    ID           shift, and go to state 44
+
+    lv2_arithmetic_stat  go to state 126
+    lv3_arithmetic_stat  go to state 27
+    value_stat           go to state 28
+    value                go to state 29
+
+
+State 73
+
+   28 lv3_arithmetic_stat: lv3_arithmetic_stat INC .
+
+    $default  reduce using rule 28 (lv3_arithmetic_stat)
+
+
+State 74
+
+   29 lv3_arithmetic_stat: lv3_arithmetic_stat DEC .
+
+    $default  reduce using rule 29 (lv3_arithmetic_stat)
+
+
+State 75
+
+   45 function_declation_part2: RB . SEMICOLON
+   47                         | RB . LCB stat_list RCB
+
+    LCB        shift, and go to state 127
+    SEMICOLON  shift, and go to state 128
+
+
+State 76
+
+   42 funtcion_declation: function_declation_part1 function_declation_part2 .
+
+    $default  reduce using rule 42 (funtcion_declation)
+
+
+State 77
+
+   44 function_declation_part2: function_parameter . RB SEMICOLON
+   46                         | function_parameter . RB LCB stat_list RCB
+   49 function_parameter: function_parameter . COMMA type ID
+
+    RB     shift, and go to state 129
+    COMMA  shift, and go to state 130
+
+
+State 78
+
+   48 function_parameter: type . ID
+
+    ID  shift, and go to state 131
+
+
+State 79
+
+   60 else_stat_part1: ELSE .
+
+    $default  reduce using rule 60 (else_stat_part1)
+
+
+State 80
+
+   53 if_else_stat: if_stat else_stat .
+
+    $default  reduce using rule 53 (if_else_stat)
+
+
+State 81
+
+   59 else_stat: else_stat_part1 . else_stat_part2
+
+    ADD          shift, and go to state 1
+    SUB          shift, and go to state 2
+    INC          shift, and go to state 3
+    DEC          shift, and go to state 4
+    LB           shift, and go to state 5
+    LCB          shift, and go to state 132
+    PRINT        shift, and go to state 6
+    IF           shift, and go to state 7
+    WHILE        shift, and go to state 8
+    VOID         shift, and go to state 9
+    INT          shift, and go to state 10
+    FLOAT        shift, and go to state 11
+    STRING       shift, and go to state 12
+    BOOL         shift, and go to state 13
+    TRUE         shift, and go to state 14
+    FALSE        shift, and go to state 15
+    RETURN       shift, and go to state 16
+    SEMICOLON    shift, and go to state 133
+    I_CONST      shift, and go to state 17
+    F_CONST      shift, and go to state 18
+    STRING_TEXT  shift, and go to state 19
+    ID           shift, and go to state 20
+
+    stat                 go to state 134
+    declaration_stat     go to state 24
+    arithmetic_stat      go to state 25
+    lv2_arithmetic_stat  go to state 26
+    lv3_arithmetic_stat  go to state 27
+    value_stat           go to state 28
+    value                go to state 29
+    compound_stat        go to state 32
+    if_else_stat         go to state 33
+    if_stat              go to state 34
+    if_stat_part1        go to state 35
+    else_stat_part2      go to state 135
+    while_stat           go to state 36
+    while_stat_part1     go to state 37
+    expression_stat      go to state 38
+    assignment_stat      go to state 39
+    function_call        go to state 40
+    print_func           go to state 41
+    type                 go to state 86
+
+
+State 82
+
+   58 if_stat_part2: LCB . stat_list RCB
+
+    ADD          shift, and go to state 1
+    SUB          shift, and go to state 2
+    INC          shift, and go to state 3
+    DEC          shift, and go to state 4
+    LB           shift, and go to state 5
+    PRINT        shift, and go to state 6
+    IF           shift, and go to state 7
+    WHILE        shift, and go to state 8
+    VOID         shift, and go to state 9
+    INT          shift, and go to state 10
+    FLOAT        shift, and go to state 11
+    STRING       shift, and go to state 12
+    BOOL         shift, and go to state 13
+    TRUE         shift, and go to state 14
+    FALSE        shift, and go to state 15
+    RETURN       shift, and go to state 16
+    I_CONST      shift, and go to state 17
+    F_CONST      shift, and go to state 18
+    STRING_TEXT  shift, and go to state 19
+    ID           shift, and go to state 20
+
+    stat_list            go to state 136
+    stat                 go to state 137
+    declaration_stat     go to state 24
+    arithmetic_stat      go to state 25
+    lv2_arithmetic_stat  go to state 26
+    lv3_arithmetic_stat  go to state 27
+    value_stat           go to state 28
+    value                go to state 29
+    compound_stat        go to state 32
+    if_else_stat         go to state 33
+    if_stat              go to state 34
+    if_stat_part1        go to state 35
+    while_stat           go to state 36
+    while_stat_part1     go to state 37
+    expression_stat      go to state 38
+    assignment_stat      go to state 39
+    function_call        go to state 40
+    print_func           go to state 41
+    type                 go to state 86
+
+
+State 83
+
+   56 if_stat_part2: SEMICOLON .
+
+    $default  reduce using rule 56 (if_stat_part2)
+
+
+State 84
+
+   57 if_stat_part2: stat .
+
+    $default  reduce using rule 57 (if_stat_part2)
+
+
+State 85
+
+   54 if_stat: if_stat_part1 if_stat_part2 .
+
+    $default  reduce using rule 54 (if_stat)
+
+
+State 86
+
+   11 declaration_stat: type . declaration SEMICOLON
+
+    ID  shift, and go to state 138
+
+    declaration  go to state 96
+
+
+State 87
+
+   79 while_stat_part2: LCB . stat_list RCB
+
+    ADD          shift, and go to state 1
+    SUB          shift, and go to state 2
+    INC          shift, and go to state 3
+    DEC          shift, and go to state 4
+    LB           shift, and go to state 5
+    PRINT        shift, and go to state 6
+    IF           shift, and go to state 7
+    WHILE        shift, and go to state 8
+    VOID         shift, and go to state 9
+    INT          shift, and go to state 10
+    FLOAT        shift, and go to state 11
+    STRING       shift, and go to state 12
+    BOOL         shift, and go to state 13
+    TRUE         shift, and go to state 14
+    FALSE        shift, and go to state 15
+    RETURN       shift, and go to state 16
+    I_CONST      shift, and go to state 17
+    F_CONST      shift, and go to state 18
+    STRING_TEXT  shift, and go to state 19
+    ID           shift, and go to state 20
+
+    stat_list            go to state 139
+    stat                 go to state 137
+    declaration_stat     go to state 24
+    arithmetic_stat      go to state 25
+    lv2_arithmetic_stat  go to state 26
+    lv3_arithmetic_stat  go to state 27
+    value_stat           go to state 28
+    value                go to state 29
+    compound_stat        go to state 32
+    if_else_stat         go to state 33
+    if_stat              go to state 34
+    if_stat_part1        go to state 35
+    while_stat           go to state 36
+    while_stat_part1     go to state 37
+    expression_stat      go to state 38
+    assignment_stat      go to state 39
+    function_call        go to state 40
+    print_func           go to state 41
+    type                 go to state 86
+
+
+State 88
+
+   77 while_stat_part2: SEMICOLON .
+
+    $default  reduce using rule 77 (while_stat_part2)
+
+
+State 89
+
+   78 while_stat_part2: stat . SEMICOLON
+
+    SEMICOLON  shift, and go to state 140
+
+
+State 90
+
+   75 while_stat: while_stat_part1 while_stat_part2 .
+
+    $default  reduce using rule 75 (while_stat)
+
+
+State 91
+
+   91 assignment_stat: assignment_stat COMMA . assignment_stat
+
+    ADD          shift, and go to state 1
+    SUB          shift, and go to state 2
+    INC          shift, and go to state 3
+    DEC          shift, and go to state 4
+    LB           shift, and go to state 5
+    TRUE         shift, and go to state 14
+    FALSE        shift, and go to state 15
+    I_CONST      shift, and go to state 17
+    F_CONST      shift, and go to state 18
+    STRING_TEXT  shift, and go to state 19
+    ID           shift, and go to state 141
+
+    arithmetic_stat      go to state 25
+    lv2_arithmetic_stat  go to state 26
+    lv3_arithmetic_stat  go to state 27
+    value_stat           go to state 28
+    value                go to state 29
+    assignment_stat      go to state 142
+
+
+State 92
+
+   80 expression_stat: assignment_stat SEMICOLON .
+
+    $default  reduce using rule 80 (expression_stat)
+
+
+State 93
+
+   81 expression_stat: function_call SEMICOLON .
+
+    $default  reduce using rule 81 (expression_stat)
+
+
+State 94
+
+   10 stat: print_func SEMICOLON .
+
+    $default  reduce using rule 10 (stat)
+
+
+State 95
+
+   12 declaration: ID . ASGN initializer
+   13            | ID .
+   14            | ID . ASGN initializer COMMA declaration
+   15            | ID . COMMA declaration
+   43 function_declation_part1: type ID . LB
+
+    ASGN   shift, and go to state 143
+    LB     shift, and go to state 144
+    COMMA  shift, and go to state 145
+
+    $default  reduce using rule 13 (declaration)
+
+
+State 96
+
+   11 declaration_stat: type declaration . SEMICOLON
+
+    SEMICOLON  shift, and go to state 146
+
+
+State 97
+
+   36 value_stat: LB value_stat . RB
+
+    RB  shift, and go to state 102
+
+
+State 98
+
+   28 lv3_arithmetic_stat: lv3_arithmetic_stat . INC
+   29                    | lv3_arithmetic_stat . DEC
+   31                    | LB lv3_arithmetic_stat . RB
+
+    INC  shift, and go to state 73
+    DEC  shift, and go to state 74
+    RB   shift, and go to state 101
+
+
+State 99
+
+   20 arithmetic_stat: LB arithmetic_stat RB .
+
+    $default  reduce using rule 20 (arithmetic_stat)
+
+
+State 100
+
+   25 lv2_arithmetic_stat: LB lv2_arithmetic_stat RB .
+
+    $default  reduce using rule 25 (lv2_arithmetic_stat)
+
+
+State 101
+
+   31 lv3_arithmetic_stat: LB lv3_arithmetic_stat RB .
+
+    $default  reduce using rule 31 (lv3_arithmetic_stat)
+
+
+State 102
+
+   36 value_stat: LB value_stat RB .
+
+    $default  reduce using rule 36 (value_stat)
+
+
+State 103
+
+   98 print_item: STRING_TEXT .
+
+    $default  reduce using rule 98 (print_item)
+
+
+State 104
+
+   97 print_item: ID .
+
+    $default  reduce using rule 97 (print_item)
+
+
+State 105
+
+   96 print_func: PRINT LB print_item . RB
+
+    RB  shift, and go to state 147
+
+
+State 106
+
+   66 logical_stat: value_stat . MT value_stat
+   67             | value_stat . LT value_stat
+   68             | value_stat . MTE value_stat
+   69             | value_stat . LTE value_stat
+   70             | value_stat . EQ value_stat
+   71             | value_stat . NE value_stat
+   72             | value_stat .
+
+    MT   shift, and go to state 148
+    LT   shift, and go to state 149
+    MTE  shift, and go to state 150
+    LTE  shift, and go to state 151
+    EQ   shift, and go to state 152
+    NE   shift, and go to state 153
+
+    $default  reduce using rule 72 (logical_stat)
+
+
+State 107
+
+   55 if_stat_part1: IF LB logical_stats . RB
+   64 logical_stats: logical_stats . logical_operation logical_stat
+
+    AND  shift, and go to state 154
+    OR   shift, and go to state 155
+    RB   shift, and go to state 156
+
+    logical_operation  go to state 157
+
+
+State 108
+
+   65 logical_stats: logical_stat .
+
+    $default  reduce using rule 65 (logical_stats)
+
+
+State 109
+
+   64 logical_stats: logical_stats . logical_operation logical_stat
+   76 while_stat_part1: WHILE LB logical_stats . RB
+
+    AND  shift, and go to state 154
+    OR   shift, and go to state 155
+    RB   shift, and go to state 158
+
+    logical_operation  go to state 157
+
+
+State 110
+
+   82 expression_stat: RETURN arithmetic_stat SEMICOLON .
+
+    $default  reduce using rule 82 (expression_stat)
+
+
+State 111
+
+   84 assignment_stat: ID ASGN arithmetic_stat .
+
+    $default  reduce using rule 84 (assignment_stat)
+
+
+State 112
+
+   85 assignment_stat: ID ADDASGN arithmetic_stat .
+
+    $default  reduce using rule 85 (assignment_stat)
+
+
+State 113
+
+   86 assignment_stat: ID SUBASGN arithmetic_stat .
+
+    $default  reduce using rule 86 (assignment_stat)
+
+
+State 114
+
+   87 assignment_stat: ID MULASGN arithmetic_stat .
+
+    $default  reduce using rule 87 (assignment_stat)
+
+
+State 115
+
+   88 assignment_stat: ID DIVASGN arithmetic_stat .
+
+    $default  reduce using rule 88 (assignment_stat)
+
+
+State 116
+
+   89 assignment_stat: ID MODASGN arithmetic_stat .
+
+    $default  reduce using rule 89 (assignment_stat)
+
+
+State 117
+
+   94 function_send_parameter: arithmetic_stat .
+
+    $default  reduce using rule 94 (function_send_parameter)
+
+
+State 118
+
+   30 lv3_arithmetic_stat: value_stat .
+   66 logical_stat: value_stat . MT value_stat
+   67             | value_stat . LT value_stat
+   68             | value_stat . MTE value_stat
+   69             | value_stat . LTE value_stat
+   70             | value_stat . EQ value_stat
+   71             | value_stat . NE value_stat
+   72             | value_stat .
+
+    MT   shift, and go to state 148
+    LT   shift, and go to state 149
+    MTE  shift, and go to state 150
+    LTE  shift, and go to state 151
+    EQ   shift, and go to state 152
+    NE   shift, and go to state 153
+
+    AND       reduce using rule 72 (logical_stat)
+    OR        reduce using rule 72 (logical_stat)
+    RB        reduce using rule 30 (lv3_arithmetic_stat)
+    RB        [reduce using rule 72 (logical_stat)]
+    COMMA     reduce using rule 30 (lv3_arithmetic_stat)
+    COMMA     [reduce using rule 72 (logical_stat)]
+    $default  reduce using rule 30 (lv3_arithmetic_stat)
+
+
+State 119
+
+   64 logical_stats: logical_stats . logical_operation logical_stat
+   95 function_send_parameter: logical_stats .
+
+    AND  shift, and go to state 154
+    OR   shift, and go to state 155
+
+    $default  reduce using rule 95 (function_send_parameter)
+
+    logical_operation  go to state 157
+
+
+State 120
+
+   92 function_call: ID LB function_send_parameter . RB
+   93 function_send_parameter: function_send_parameter . COMMA arithmetic_stat
+
+    RB     shift, and go to state 159
+    COMMA  shift, and go to state 160
+
+
+State 121
+
+   17 arithmetic_stat: lv2_arithmetic_stat ADD arithmetic_stat .
+
+    $default  reduce using rule 17 (arithmetic_stat)
+
+
+State 122
+
+   18 arithmetic_stat: lv2_arithmetic_stat SUB arithmetic_stat .
+
+    $default  reduce using rule 18 (arithmetic_stat)
+
+
+State 123
+
+   25 lv2_arithmetic_stat: LB . lv2_arithmetic_stat RB
+   31 lv3_arithmetic_stat: LB . lv3_arithmetic_stat RB
+   36 value_stat: LB . value_stat RB
+
+    ADD          shift, and go to state 1
+    SUB          shift, and go to state 2
+    INC          shift, and go to state 3
+    DEC          shift, and go to state 4
+    LB           shift, and go to state 123
+    TRUE         shift, and go to state 14
+    FALSE        shift, and go to state 15
+    I_CONST      shift, and go to state 17
+    F_CONST      shift, and go to state 18
+    STRING_TEXT  shift, and go to state 19
+    ID           shift, and go to state 44
+
+    lv2_arithmetic_stat  go to state 161
+    lv3_arithmetic_stat  go to state 52
+    value_stat           go to state 53
+    value                go to state 29
+
+
+State 124
+
+   21 lv2_arithmetic_stat: lv3_arithmetic_stat MUL lv2_arithmetic_stat .
+
+    $default  reduce using rule 21 (lv2_arithmetic_stat)
+
+
+State 125
+
+   22 lv2_arithmetic_stat: lv3_arithmetic_stat DIV lv2_arithmetic_stat .
+
+    $default  reduce using rule 22 (lv2_arithmetic_stat)
+
+
+State 126
+
+   23 lv2_arithmetic_stat: lv3_arithmetic_stat MOD lv2_arithmetic_stat .
+
+    $default  reduce using rule 23 (lv2_arithmetic_stat)
+
+
+State 127
+
+   47 function_declation_part2: RB LCB . stat_list RCB
+
+    ADD          shift, and go to state 1
+    SUB          shift, and go to state 2
+    INC          shift, and go to state 3
+    DEC          shift, and go to state 4
+    LB           shift, and go to state 5
+    PRINT        shift, and go to state 6
+    IF           shift, and go to state 7
+    WHILE        shift, and go to state 8
+    VOID         shift, and go to state 9
+    INT          shift, and go to state 10
+    FLOAT        shift, and go to state 11
+    STRING       shift, and go to state 12
+    BOOL         shift, and go to state 13
+    TRUE         shift, and go to state 14
+    FALSE        shift, and go to state 15
+    RETURN       shift, and go to state 16
+    I_CONST      shift, and go to state 17
+    F_CONST      shift, and go to state 18
+    STRING_TEXT  shift, and go to state 19
+    ID           shift, and go to state 20
+
+    stat_list            go to state 162
+    stat                 go to state 137
+    declaration_stat     go to state 24
+    arithmetic_stat      go to state 25
+    lv2_arithmetic_stat  go to state 26
+    lv3_arithmetic_stat  go to state 27
+    value_stat           go to state 28
+    value                go to state 29
+    compound_stat        go to state 32
+    if_else_stat         go to state 33
+    if_stat              go to state 34
+    if_stat_part1        go to state 35
+    while_stat           go to state 36
+    while_stat_part1     go to state 37
+    expression_stat      go to state 38
+    assignment_stat      go to state 39
+    function_call        go to state 40
+    print_func           go to state 41
+    type                 go to state 86
+
+
+State 128
+
+   45 function_declation_part2: RB SEMICOLON .
+
+    $default  reduce using rule 45 (function_declation_part2)
+
+
+State 129
+
+   44 function_declation_part2: function_parameter RB . SEMICOLON
+   46                         | function_parameter RB . LCB stat_list RCB
+
+    LCB        shift, and go to state 163
+    SEMICOLON  shift, and go to state 164
+
+
+State 130
+
+   49 function_parameter: function_parameter COMMA . type ID
+
+    VOID    shift, and go to state 9
+    INT     shift, and go to state 10
+    FLOAT   shift, and go to state 11
+    STRING  shift, and go to state 12
+    BOOL    shift, and go to state 13
+
+    type  go to state 165
+
+
+State 131
+
+   48 function_parameter: type ID .
+
+    $default  reduce using rule 48 (function_parameter)
+
+
+State 132
+
+   62 else_stat_part2: LCB . stat_list RCB
+
+    ADD          shift, and go to state 1
+    SUB          shift, and go to state 2
+    INC          shift, and go to state 3
+    DEC          shift, and go to state 4
+    LB           shift, and go to state 5
+    PRINT        shift, and go to state 6
+    IF           shift, and go to state 7
+    WHILE        shift, and go to state 8
+    VOID         shift, and go to state 9
+    INT          shift, and go to state 10
+    FLOAT        shift, and go to state 11
+    STRING       shift, and go to state 12
+    BOOL         shift, and go to state 13
+    TRUE         shift, and go to state 14
+    FALSE        shift, and go to state 15
+    RETURN       shift, and go to state 16
+    I_CONST      shift, and go to state 17
+    F_CONST      shift, and go to state 18
+    STRING_TEXT  shift, and go to state 19
+    ID           shift, and go to state 20
+
+    stat_list            go to state 166
+    stat                 go to state 137
+    declaration_stat     go to state 24
+    arithmetic_stat      go to state 25
+    lv2_arithmetic_stat  go to state 26
+    lv3_arithmetic_stat  go to state 27
+    value_stat           go to state 28
+    value                go to state 29
+    compound_stat        go to state 32
+    if_else_stat         go to state 33
+    if_stat              go to state 34
+    if_stat_part1        go to state 35
+    while_stat           go to state 36
+    while_stat_part1     go to state 37
+    expression_stat      go to state 38
+    assignment_stat      go to state 39
+    function_call        go to state 40
+    print_func           go to state 41
+    type                 go to state 86
+
+
+State 133
+
+   63 else_stat_part2: SEMICOLON .
+
+    $default  reduce using rule 63 (else_stat_part2)
+
+
+State 134
+
+   61 else_stat_part2: stat . SEMICOLON
+
+    SEMICOLON  shift, and go to state 167
+
+
+State 135
+
+   59 else_stat: else_stat_part1 else_stat_part2 .
+
+    $default  reduce using rule 59 (else_stat)
+
+
+State 136
+
+    5 stat_list: stat_list . stat
+   58 if_stat_part2: LCB stat_list . RCB
+
+    ADD          shift, and go to state 1
+    SUB          shift, and go to state 2
+    INC          shift, and go to state 3
+    DEC          shift, and go to state 4
+    LB           shift, and go to state 5
+    RCB          shift, and go to state 168
+    PRINT        shift, and go to state 6
+    IF           shift, and go to state 7
+    WHILE        shift, and go to state 8
+    VOID         shift, and go to state 9
+    INT          shift, and go to state 10
+    FLOAT        shift, and go to state 11
+    STRING       shift, and go to state 12
+    BOOL         shift, and go to state 13
+    TRUE         shift, and go to state 14
+    FALSE        shift, and go to state 15
+    RETURN       shift, and go to state 16
+    I_CONST      shift, and go to state 17
+    F_CONST      shift, and go to state 18
+    STRING_TEXT  shift, and go to state 19
+    ID           shift, and go to state 20
+
+    stat                 go to state 169
+    declaration_stat     go to state 24
+    arithmetic_stat      go to state 25
+    lv2_arithmetic_stat  go to state 26
+    lv3_arithmetic_stat  go to state 27
+    value_stat           go to state 28
+    value                go to state 29
+    compound_stat        go to state 32
+    if_else_stat         go to state 33
+    if_stat              go to state 34
+    if_stat_part1        go to state 35
+    while_stat           go to state 36
+    while_stat_part1     go to state 37
+    expression_stat      go to state 38
+    assignment_stat      go to state 39
+    function_call        go to state 40
+    print_func           go to state 41
+    type                 go to state 86
+
+
+State 137
+
+    6 stat_list: stat .
+
+    $default  reduce using rule 6 (stat_list)
+
+
+State 138
+
+   12 declaration: ID . ASGN initializer
+   13            | ID .
+   14            | ID . ASGN initializer COMMA declaration
+   15            | ID . COMMA declaration
+
+    ASGN   shift, and go to state 143
+    COMMA  shift, and go to state 145
+
+    $default  reduce using rule 13 (declaration)
+
+
+State 139
+
+    5 stat_list: stat_list . stat
+   79 while_stat_part2: LCB stat_list . RCB
+
+    ADD          shift, and go to state 1
+    SUB          shift, and go to state 2
+    INC          shift, and go to state 3
+    DEC          shift, and go to state 4
+    LB           shift, and go to state 5
+    RCB          shift, and go to state 170
+    PRINT        shift, and go to state 6
+    IF           shift, and go to state 7
+    WHILE        shift, and go to state 8
+    VOID         shift, and go to state 9
+    INT          shift, and go to state 10
+    FLOAT        shift, and go to state 11
+    STRING       shift, and go to state 12
+    BOOL         shift, and go to state 13
+    TRUE         shift, and go to state 14
+    FALSE        shift, and go to state 15
+    RETURN       shift, and go to state 16
+    I_CONST      shift, and go to state 17
+    F_CONST      shift, and go to state 18
+    STRING_TEXT  shift, and go to state 19
+    ID           shift, and go to state 20
+
+    stat                 go to state 169
+    declaration_stat     go to state 24
+    arithmetic_stat      go to state 25
+    lv2_arithmetic_stat  go to state 26
+    lv3_arithmetic_stat  go to state 27
+    value_stat           go to state 28
+    value                go to state 29
+    compound_stat        go to state 32
+    if_else_stat         go to state 33
+    if_stat              go to state 34
+    if_stat_part1        go to state 35
+    while_stat           go to state 36
+    while_stat_part1     go to state 37
+    expression_stat      go to state 38
+    assignment_stat      go to state 39
+    function_call        go to state 40
+    print_func           go to state 41
+    type                 go to state 86
+
+
+State 140
+
+   78 while_stat_part2: stat SEMICOLON .
+
+    $default  reduce using rule 78 (while_stat_part2)
+
+
+State 141
+
+   41 value: ID .
+   84 assignment_stat: ID . ASGN arithmetic_stat
+   85                | ID . ADDASGN arithmetic_stat
+   86                | ID . SUBASGN arithmetic_stat
+   87                | ID . MULASGN arithmetic_stat
+   88                | ID . DIVASGN arithmetic_stat
+   89                | ID . MODASGN arithmetic_stat
+
+    ASGN     shift, and go to state 59
+    ADDASGN  shift, and go to state 60
+    SUBASGN  shift, and go to state 61
+    MULASGN  shift, and go to state 62
+    DIVASGN  shift, and go to state 63
+    MODASGN  shift, and go to state 64
+
+    $default  reduce using rule 41 (value)
+
+
+State 142
+
+   91 assignment_stat: assignment_stat . COMMA assignment_stat
+   91                | assignment_stat COMMA assignment_stat .
+
+    COMMA  shift, and go to state 91
+
+    COMMA     [reduce using rule 91 (assignment_stat)]
+    $default  reduce using rule 91 (assignment_stat)
+
+
+State 143
+
+   12 declaration: ID ASGN . initializer
+   14            | ID ASGN . initializer COMMA declaration
+
+    ADD          shift, and go to state 1
+    SUB          shift, and go to state 2
+    INC          shift, and go to state 3
+    DEC          shift, and go to state 4
+    LB           shift, and go to state 5
+    TRUE         shift, and go to state 14
+    FALSE        shift, and go to state 15
+    I_CONST      shift, and go to state 17
+    F_CONST      shift, and go to state 18
+    STRING_TEXT  shift, and go to state 19
+    ID           shift, and go to state 44
+
+    initializer          go to state 171
+    arithmetic_stat      go to state 172
+    lv2_arithmetic_stat  go to state 26
+    lv3_arithmetic_stat  go to state 27
+    value_stat           go to state 28
+    value                go to state 29
+
+
+State 144
+
+   43 function_declation_part1: type ID LB .
+
+    $default  reduce using rule 43 (function_declation_part1)
+
+
+State 145
+
+   15 declaration: ID COMMA . declaration
+
+    ID  shift, and go to state 138
+
+    declaration  go to state 173
+
+
+State 146
+
+   11 declaration_stat: type declaration SEMICOLON .
+
+    $default  reduce using rule 11 (declaration_stat)
+
+
+State 147
+
+   96 print_func: PRINT LB print_item RB .
+
+    $default  reduce using rule 96 (print_func)
+
+
+State 148
+
+   66 logical_stat: value_stat MT . value_stat
+
+    ADD          shift, and go to state 1
+    SUB          shift, and go to state 2
+    LB           shift, and go to state 43
+    TRUE         shift, and go to state 14
+    FALSE        shift, and go to state 15
+    I_CONST      shift, and go to state 17
+    F_CONST      shift, and go to state 18
+    STRING_TEXT  shift, and go to state 19
+    ID           shift, and go to state 44
+
+    value_stat  go to state 174
+    value       go to state 29
+
+
+State 149
+
+   67 logical_stat: value_stat LT . value_stat
+
+    ADD          shift, and go to state 1
+    SUB          shift, and go to state 2
+    LB           shift, and go to state 43
+    TRUE         shift, and go to state 14
+    FALSE        shift, and go to state 15
+    I_CONST      shift, and go to state 17
+    F_CONST      shift, and go to state 18
+    STRING_TEXT  shift, and go to state 19
+    ID           shift, and go to state 44
+
+    value_stat  go to state 175
+    value       go to state 29
+
+
+State 150
+
+   68 logical_stat: value_stat MTE . value_stat
+
+    ADD          shift, and go to state 1
+    SUB          shift, and go to state 2
+    LB           shift, and go to state 43
+    TRUE         shift, and go to state 14
+    FALSE        shift, and go to state 15
+    I_CONST      shift, and go to state 17
+    F_CONST      shift, and go to state 18
+    STRING_TEXT  shift, and go to state 19
+    ID           shift, and go to state 44
+
+    value_stat  go to state 176
+    value       go to state 29
+
+
+State 151
+
+   69 logical_stat: value_stat LTE . value_stat
+
+    ADD          shift, and go to state 1
+    SUB          shift, and go to state 2
+    LB           shift, and go to state 43
+    TRUE         shift, and go to state 14
+    FALSE        shift, and go to state 15
+    I_CONST      shift, and go to state 17
+    F_CONST      shift, and go to state 18
+    STRING_TEXT  shift, and go to state 19
+    ID           shift, and go to state 44
+
+    value_stat  go to state 177
+    value       go to state 29
+
+
+State 152
+
+   70 logical_stat: value_stat EQ . value_stat
+
+    ADD          shift, and go to state 1
+    SUB          shift, and go to state 2
+    LB           shift, and go to state 43
+    TRUE         shift, and go to state 14
+    FALSE        shift, and go to state 15
+    I_CONST      shift, and go to state 17
+    F_CONST      shift, and go to state 18
+    STRING_TEXT  shift, and go to state 19
+    ID           shift, and go to state 44
+
+    value_stat  go to state 178
+    value       go to state 29
+
+
+State 153
+
+   71 logical_stat: value_stat NE . value_stat
+
+    ADD          shift, and go to state 1
+    SUB          shift, and go to state 2
+    LB           shift, and go to state 43
+    TRUE         shift, and go to state 14
+    FALSE        shift, and go to state 15
+    I_CONST      shift, and go to state 17
+    F_CONST      shift, and go to state 18
+    STRING_TEXT  shift, and go to state 19
+    ID           shift, and go to state 44
+
+    value_stat  go to state 179
+    value       go to state 29
+
+
+State 154
+
+   73 logical_operation: AND .
+
+    $default  reduce using rule 73 (logical_operation)
+
+
+State 155
+
+   74 logical_operation: OR .
+
+    $default  reduce using rule 74 (logical_operation)
+
+
+State 156
+
+   55 if_stat_part1: IF LB logical_stats RB .
+
+    $default  reduce using rule 55 (if_stat_part1)
+
+
+State 157
+
+   64 logical_stats: logical_stats logical_operation . logical_stat
+
+    ADD          shift, and go to state 1
+    SUB          shift, and go to state 2
+    LB           shift, and go to state 43
+    TRUE         shift, and go to state 14
+    FALSE        shift, and go to state 15
+    I_CONST      shift, and go to state 17
+    F_CONST      shift, and go to state 18
+    STRING_TEXT  shift, and go to state 19
+    ID           shift, and go to state 44
+
+    value_stat    go to state 106
+    value         go to state 29
+    logical_stat  go to state 180
+
+
+State 158
+
+   76 while_stat_part1: WHILE LB logical_stats RB .
+
+    $default  reduce using rule 76 (while_stat_part1)
+
+
+State 159
+
+   92 function_call: ID LB function_send_parameter RB .
+
+    $default  reduce using rule 92 (function_call)
+
+
+State 160
+
+   93 function_send_parameter: function_send_parameter COMMA . arithmetic_stat
+
+    ADD          shift, and go to state 1
+    SUB          shift, and go to state 2
+    INC          shift, and go to state 3
+    DEC          shift, and go to state 4
+    LB           shift, and go to state 5
+    TRUE         shift, and go to state 14
+    FALSE        shift, and go to state 15
+    I_CONST      shift, and go to state 17
+    F_CONST      shift, and go to state 18
+    STRING_TEXT  shift, and go to state 19
+    ID           shift, and go to state 44
+
+    arithmetic_stat      go to state 181
+    lv2_arithmetic_stat  go to state 26
+    lv3_arithmetic_stat  go to state 27
+    value_stat           go to state 28
+    value                go to state 29
+
+
+State 161
+
+   25 lv2_arithmetic_stat: LB lv2_arithmetic_stat . RB
+
+    RB  shift, and go to state 100
+
+
+State 162
+
+    5 stat_list: stat_list . stat
+   47 function_declation_part2: RB LCB stat_list . RCB
+
+    ADD          shift, and go to state 1
+    SUB          shift, and go to state 2
+    INC          shift, and go to state 3
+    DEC          shift, and go to state 4
+    LB           shift, and go to state 5
+    RCB          shift, and go to state 182
+    PRINT        shift, and go to state 6
+    IF           shift, and go to state 7
+    WHILE        shift, and go to state 8
+    VOID         shift, and go to state 9
+    INT          shift, and go to state 10
+    FLOAT        shift, and go to state 11
+    STRING       shift, and go to state 12
+    BOOL         shift, and go to state 13
+    TRUE         shift, and go to state 14
+    FALSE        shift, and go to state 15
+    RETURN       shift, and go to state 16
+    I_CONST      shift, and go to state 17
+    F_CONST      shift, and go to state 18
+    STRING_TEXT  shift, and go to state 19
+    ID           shift, and go to state 20
+
+    stat                 go to state 169
+    declaration_stat     go to state 24
+    arithmetic_stat      go to state 25
+    lv2_arithmetic_stat  go to state 26
+    lv3_arithmetic_stat  go to state 27
+    value_stat           go to state 28
+    value                go to state 29
+    compound_stat        go to state 32
+    if_else_stat         go to state 33
+    if_stat              go to state 34
+    if_stat_part1        go to state 35
+    while_stat           go to state 36
+    while_stat_part1     go to state 37
+    expression_stat      go to state 38
+    assignment_stat      go to state 39
+    function_call        go to state 40
+    print_func           go to state 41
+    type                 go to state 86
+
+
+State 163
+
+   46 function_declation_part2: function_parameter RB LCB . stat_list RCB
+
+    ADD          shift, and go to state 1
+    SUB          shift, and go to state 2
+    INC          shift, and go to state 3
+    DEC          shift, and go to state 4
+    LB           shift, and go to state 5
+    PRINT        shift, and go to state 6
+    IF           shift, and go to state 7
+    WHILE        shift, and go to state 8
+    VOID         shift, and go to state 9
+    INT          shift, and go to state 10
+    FLOAT        shift, and go to state 11
+    STRING       shift, and go to state 12
+    BOOL         shift, and go to state 13
+    TRUE         shift, and go to state 14
+    FALSE        shift, and go to state 15
+    RETURN       shift, and go to state 16
+    I_CONST      shift, and go to state 17
+    F_CONST      shift, and go to state 18
+    STRING_TEXT  shift, and go to state 19
+    ID           shift, and go to state 20
+
+    stat_list            go to state 183
+    stat                 go to state 137
+    declaration_stat     go to state 24
+    arithmetic_stat      go to state 25
+    lv2_arithmetic_stat  go to state 26
+    lv3_arithmetic_stat  go to state 27
+    value_stat           go to state 28
+    value                go to state 29
+    compound_stat        go to state 32
+    if_else_stat         go to state 33
+    if_stat              go to state 34
+    if_stat_part1        go to state 35
+    while_stat           go to state 36
+    while_stat_part1     go to state 37
+    expression_stat      go to state 38
+    assignment_stat      go to state 39
+    function_call        go to state 40
+    print_func           go to state 41
+    type                 go to state 86
+
+
+State 164
+
+   44 function_declation_part2: function_parameter RB SEMICOLON .
+
+    $default  reduce using rule 44 (function_declation_part2)
+
+
+State 165
+
+   49 function_parameter: function_parameter COMMA type . ID
+
+    ID  shift, and go to state 184
+
+
+State 166
+
+    5 stat_list: stat_list . stat
+   62 else_stat_part2: LCB stat_list . RCB
+
+    ADD          shift, and go to state 1
+    SUB          shift, and go to state 2
+    INC          shift, and go to state 3
+    DEC          shift, and go to state 4
+    LB           shift, and go to state 5
+    RCB          shift, and go to state 185
+    PRINT        shift, and go to state 6
+    IF           shift, and go to state 7
+    WHILE        shift, and go to state 8
+    VOID         shift, and go to state 9
+    INT          shift, and go to state 10
+    FLOAT        shift, and go to state 11
+    STRING       shift, and go to state 12
+    BOOL         shift, and go to state 13
+    TRUE         shift, and go to state 14
+    FALSE        shift, and go to state 15
+    RETURN       shift, and go to state 16
+    I_CONST      shift, and go to state 17
+    F_CONST      shift, and go to state 18
+    STRING_TEXT  shift, and go to state 19
+    ID           shift, and go to state 20
+
+    stat                 go to state 169
+    declaration_stat     go to state 24
+    arithmetic_stat      go to state 25
+    lv2_arithmetic_stat  go to state 26
+    lv3_arithmetic_stat  go to state 27
+    value_stat           go to state 28
+    value                go to state 29
+    compound_stat        go to state 32
+    if_else_stat         go to state 33
+    if_stat              go to state 34
+    if_stat_part1        go to state 35
+    while_stat           go to state 36
+    while_stat_part1     go to state 37
+    expression_stat      go to state 38
+    assignment_stat      go to state 39
+    function_call        go to state 40
+    print_func           go to state 41
+    type                 go to state 86
+
+
+State 167
+
+   61 else_stat_part2: stat SEMICOLON .
+
+    $default  reduce using rule 61 (else_stat_part2)
+
+
+State 168
+
+   58 if_stat_part2: LCB stat_list RCB .
+
+    $default  reduce using rule 58 (if_stat_part2)
+
+
+State 169
+
+    5 stat_list: stat_list stat .
+
+    $default  reduce using rule 5 (stat_list)
+
+
+State 170
+
+   79 while_stat_part2: LCB stat_list RCB .
+
+    $default  reduce using rule 79 (while_stat_part2)
+
+
+State 171
+
+   12 declaration: ID ASGN initializer .
+   14            | ID ASGN initializer . COMMA declaration
+
+    COMMA  shift, and go to state 186
+
+    $default  reduce using rule 12 (declaration)
+
+
+State 172
+
+   16 initializer: arithmetic_stat .
+
+    $default  reduce using rule 16 (initializer)
+
+
+State 173
+
+   15 declaration: ID COMMA declaration .
+
+    $default  reduce using rule 15 (declaration)
+
+
+State 174
+
+   66 logical_stat: value_stat MT value_stat .
+
+    $default  reduce using rule 66 (logical_stat)
+
+
+State 175
+
+   67 logical_stat: value_stat LT value_stat .
+
+    $default  reduce using rule 67 (logical_stat)
+
+
+State 176
+
+   68 logical_stat: value_stat MTE value_stat .
+
+    $default  reduce using rule 68 (logical_stat)
+
+
+State 177
+
+   69 logical_stat: value_stat LTE value_stat .
+
+    $default  reduce using rule 69 (logical_stat)
+
+
+State 178
+
+   70 logical_stat: value_stat EQ value_stat .
+
+    $default  reduce using rule 70 (logical_stat)
+
+
+State 179
+
+   71 logical_stat: value_stat NE value_stat .
+
+    $default  reduce using rule 71 (logical_stat)
+
+
+State 180
+
+   64 logical_stats: logical_stats logical_operation logical_stat .
+
+    $default  reduce using rule 64 (logical_stats)
+
+
+State 181
+
+   93 function_send_parameter: function_send_parameter COMMA arithmetic_stat .
+
+    $default  reduce using rule 93 (function_send_parameter)
+
+
+State 182
+
+   47 function_declation_part2: RB LCB stat_list RCB .
+
+    $default  reduce using rule 47 (function_declation_part2)
+
+
+State 183
+
+    5 stat_list: stat_list . stat
+   46 function_declation_part2: function_parameter RB LCB stat_list . RCB
+
+    ADD          shift, and go to state 1
+    SUB          shift, and go to state 2
+    INC          shift, and go to state 3
+    DEC          shift, and go to state 4
+    LB           shift, and go to state 5
+    RCB          shift, and go to state 187
+    PRINT        shift, and go to state 6
+    IF           shift, and go to state 7
+    WHILE        shift, and go to state 8
+    VOID         shift, and go to state 9
+    INT          shift, and go to state 10
+    FLOAT        shift, and go to state 11
+    STRING       shift, and go to state 12
+    BOOL         shift, and go to state 13
+    TRUE         shift, and go to state 14
+    FALSE        shift, and go to state 15
+    RETURN       shift, and go to state 16
+    I_CONST      shift, and go to state 17
+    F_CONST      shift, and go to state 18
+    STRING_TEXT  shift, and go to state 19
+    ID           shift, and go to state 20
+
+    stat                 go to state 169
+    declaration_stat     go to state 24
+    arithmetic_stat      go to state 25
+    lv2_arithmetic_stat  go to state 26
+    lv3_arithmetic_stat  go to state 27
+    value_stat           go to state 28
+    value                go to state 29
+    compound_stat        go to state 32
+    if_else_stat         go to state 33
+    if_stat              go to state 34
+    if_stat_part1        go to state 35
+    while_stat           go to state 36
+    while_stat_part1     go to state 37
+    expression_stat      go to state 38
+    assignment_stat      go to state 39
+    function_call        go to state 40
+    print_func           go to state 41
+    type                 go to state 86
+
+
+State 184
+
+   49 function_parameter: function_parameter COMMA type ID .
+
+    $default  reduce using rule 49 (function_parameter)
+
+
+State 185
+
+   62 else_stat_part2: LCB stat_list RCB .
+
+    $default  reduce using rule 62 (else_stat_part2)
+
+
+State 186
+
+   14 declaration: ID ASGN initializer COMMA . declaration
+
+    ID  shift, and go to state 138
+
+    declaration  go to state 188
+
+
+State 187
+
+   46 function_declation_part2: function_parameter RB LCB stat_list RCB .
+
+    $default  reduce using rule 46 (function_declation_part2)
+
+
+State 188
+
+   14 declaration: ID ASGN initializer COMMA declaration .
+
+    $default  reduce using rule 14 (declaration)
